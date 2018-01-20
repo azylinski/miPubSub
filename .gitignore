@@ -1,0 +1,12 @@
+# Temporary Python files
+*.pyc
+*.egg-info
+__pycache__
+
+# Temporary virtual environment files
+/.cache/
+/.venv/
+
+# Temporary server files
+.env
+*.pid
