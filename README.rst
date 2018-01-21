@@ -1,93 +1,106 @@
-# WIP: miPubSub
+WIP: miPubSub
+=============
 
 Publish/Subscribe pattern build with RabbitMQ and Protocol Buffers.
 
-## Installation
+Installation
+------------
 
-```
-pip install miPubSub
-```
+.. code-block:: bash
 
-## Usage
+    pip install -e git@github.com:azylinski/miPubSub.git@master#egg=miPubSub
+
+
+Run RabbitMQ
+------------
 
 In order to use miPubSub, you need to have access to RabbitMQ server.
-To setup locally with [docker](https://docs.docker.com/engine/installation/):
+To setup locally with `docker <https://docs.docker.com/engine/installation/>`_:
 
-```bash
-docker run -d \
-  --name demo-rabbit \
-  -p 5672:5672 \
-  -p 15672:15672 \
-  rabbitmq:3.6.15-management-alpine
-```
+.. code-block:: bash
 
-### Define events structure:
-
-```
-# schemas/events/user.proto
-
-syntax = "proto3";
-
-package events;
+    docker run -d \
+      --name demo-rabbit \
+      -p 5672:5672 \
+      -p 15672:15672 \
+      rabbitmq:3.6.15-management-alpine
 
 
-message User {
-  string name = 1;
-  string email = 2;
-}
-```
+Define events structure
+-----------------------
 
-```
-# compile proto files
-protoc -I=schemas/events/ --python_out=proto/ schemas/events/*.proto
-```
+.. code-block::
 
-### Example:
+    # schemas/events/user.proto
 
-```python
-# producer.py
+    syntax = "proto3";
 
-from miPubSub import PubSub
-from proto.user_pb2 import User
+    package events;
 
 
-ps = PubSub('user_management')
-
-u = User(name='Adam West', email='adam.west@mail.com')
-
-ps.publish('signup_completed', u)
-```
-
-```python
-# consumer.py
-
-from miPubSub import PubSub
-from proto.user_pb2 import User
+    message User {
+      string name = 1;
+      string email = 2;
+    }
 
 
-ps = PubSub('mailer')
+.. code-block:: bash
 
-@ps.listen('signup_completed', User)
-def on_signup_completed(user):
-    # Send welcome email to: user.email
-    pass
-
-ps.run()
-```
+    # compile proto files
+    protoc -I=schemas/events/ --python_out=proto/ schemas/events/*.proto
 
 
-## How it works
+Example
+-------
+
+.. code-block:: python
+
+    # producer.py
+
+    from miPubSub import PubSub
+    from proto.user_pb2 import User
+
+
+    ps = PubSub('user_management')
+
+    u = User(name='Adam West', email='adam.west@mail.com')
+
+    ps.publish('signup_completed', u)
+
+
+.. code-block:: python
+
+    # consumer.py
+
+    from miPubSub import PubSub
+    from proto.user_pb2 import User
+
+
+    ps = PubSub('mailer')
+
+    @ps.listen('signup_completed', User)
+    def on_signup_completed(user):
+        # Send welcome email to: user.email
+        pass
+
+    ps.run()
+
+
+How it works
+------------
 
 TBD
 
 More details on rabbitmq pub/sub: https://www.rabbitmq.com/tutorials/tutorial-three-python.html
 
 
-## Authors
+Authors
+-------
 
-* [@ArturZylinski](https://twitter.com/ArturZylinski)
+- `@ArturZylinski <https://twitter.com/ArturZylinski>`_
 
 
-## License
+License
+-------
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the `LICENSE <LICENSE>`_ file for details
